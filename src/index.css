@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f4f7f6; /* Matches your app's light gray background */
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#root {
+  width: 100%;
+}
