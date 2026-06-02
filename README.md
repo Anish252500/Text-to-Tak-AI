@@ -47,11 +47,8 @@ Standard LLMs output dry, heavily bulleted, and robotic summaries. This project 
 ## 📚 Data & References
 The 105-point editorial DNA rulebook driving this engine was reverse-engineered by analyzing a comprehensive dataset. Below is a curated sample of the attached articles used for reference to map narrative flow, quote syntax, and vocabulary registers:
 
-*   **Sports:** [पंड्या ब्रदर्स में खटपट? क्रुणाल के IPL...](https://www.aajtak.in/sports/cricket/story/hardik-pandya-no-post-for-brother-krunal-after-rcb-ipl-2026-title-win-tspok-dskc-2567307-2026-06-01) 
-- *Tuned for emotional, relationship-driven sports narratives.*
+*   **Sports:** [पंड्या ब्रदर्स में खटपट? क्रुणाल के IPL...](https://www.aajtak.in/sports/cricket/story/hardik-pandya-no-post-for-brother-krunal-after-rcb-ipl-2026-title-win-tspok-dskc-2567307-2026-06-01) <br>*Tuned for emotional, relationship-driven sports narratives.*
 
-*   **Crime:** [6 आपराधिक मामले, दबंग अंदाज...](https://www.aajtak.in/crime/news/story/muzzaffarpur-govind-sharma-shot-dead-bihar-crime-news-pvzs-dskc-2567361-2026-06-01) 
-- *Tuned for authoritative formatting and quote integration.*
+*   **Crime:** [6 आपराधिक मामले, दबंग अंदाज...](https://www.aajtak.in/crime/news/story/muzzaffarpur-govind-sharma-shot-dead-bihar-crime-news-pvzs-dskc-2567361-2026-06-01) <br>*Tuned for authoritative formatting and quote integration.*
 
-*   **Entertainment:** ['अल्फा' के सेट पर आलिया भट्ट से हुई बहस? झगड़े पर...](https://www.aajtak.in/entertainment/bollywood-news/story/bobby-deol-slams-rift-reports-with-alia-bhatt-on-alpha-sets-praised-actress-tmovh-dskc-2567189-2026-06-01)
-- *Tuned for viral internet reactions and suspenseful pacing.*
+*   **Entertainment:** ['अल्फा' के सेट पर आलिया भट्ट से हुई बहस? झगड़े पर...](https://www.aajtak.in/entertainment/bollywood-news/story/bobby-deol-slams-rift-reports-with-alia-bhatt-on-alpha-sets-praised-actress-tmovh-dskc-2567189-2026-06-01) <br>*Tuned for viral internet reactions and suspenseful pacing.*
