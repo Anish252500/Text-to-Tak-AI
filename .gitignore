@@ -22,4 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment Variables
 .env
+
+# Datasets and Local Files
+Dataset.docx
