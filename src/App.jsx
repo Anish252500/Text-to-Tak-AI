@@ -12,10 +12,9 @@ function App() {
     dangerouslyAllowBrowser: true 
   });
 
-  // 1. Dictionary of Category-Specific Rules (Token Saver)
   const categoryRules = {
     Politics: `
-- Always append respectful but authoritative suffixes to top leaders (e.g., 'पीएम मोदी').
+- Always append respectful but authoritative suffixes to top leaders if they are mentioned in the facts.
 - Detail physical interactions, closed-door huddles, and high-level strategy sessions.
 - Frame electoral contests as all-out tactical battles.
 - Capture local physical security risks or street blockades with vivid gravity.`,
@@ -58,62 +57,54 @@ function App() {
     setDetectedCategory('Detecting Context...');
     
     try {
-      // ==========================================
-      // PASS 1: CLASSIFICATION (Fast & Cheap)
-      // ==========================================
+      // PASS 1: CLASSIFICATION
       const classPrompt = `Analyze the following facts and classify them into exactly ONE of these categories: Politics, Crime, Entertainment, Sports, Business, General. 
       Respond with ONLY the category word. No other text.
       Facts: ${inputText}`;
 
       const classCompletion = await groq.chat.completions.create({
         messages: [{ role: "user", content: classPrompt }],
-        model: "llama-3.1-8b-instant", // Using a smaller, faster model just for classification
+        model: "llama-3.1-8b-instant",
         temperature: 0.1,
       });
 
       let category = classCompletion.choices[0]?.message?.content?.trim() || "General";
-      
-      // Safety fallback if AI hallucinates the category name
       if (!categoryRules[category]) category = "General";
-      
       setDetectedCategory(`Category: ${category}`);
 
-      // ==========================================
-      // PASS 2: GENERATION (Heavy Lifting)
-      // ==========================================
+      // PASS 2: GENERATION (Hyperlink rules removed)
       const systemPrompt = `
 You are the elite AI Core Editor for the Hindi News Channel "Aaj Tak". Your sole objective is to take raw facts and write a highly natural, conversational, and engaging digital news article that perfectly mimics a human Aaj Tak journalist. 
 
 CRITICAL OVERRIDE: YOU MUST NEVER USE BULLET POINTS FOR THE MAIN STORY. WRITE IN FLOWING, NARRATIVE PROSE ONLY.
 
+ANTI-HALLUCINATION PROTOCOL: You are strictly forbidden from inventing, fabricating, or adding names, political schemes, or celebrities that are not explicitly present in the raw facts. Stick ONLY to the entities provided.
+
 ---
 Headline Engineering & Mechanics (STRICT RULES)
-- Use a compound headline structure separated by exactly ONE colon (:) OR use a question mark (?) if posing a suspenseful question. 
-- CRITICAL: NEVER use more than one colon (:) in a headline.
-- Use single quotes ('') strategically within the headline to highlight a controversial word or statement (e.g., TMC में 'महाखेला').
-- Place the most recognizable entity, location, or celebrity name at the absolute beginning.
-- Never end a headline with a full stop (।) or any terminal punctuation.
+- Use a compound headline structure separated by exactly ONE colon (:) OR use a question mark (?) if posing a suspenseful question. NEVER use more than one colon.
+- CONDITIONAL HOOK: IF a celebrity, personality, or high-authority name is present in the raw facts, place it directly in the headline. IF NO name is present, focus the headline heavily on the location or the main action (e.g., 'प्रशासन का एक्शन'). DO NOT invent names.
+- Use single quotes ('') strategically within the headline to highlight a controversial word.
 - Integrate high-stakes action verbs directly into the title.
-- Keep the headline length between 12 to 18 words.
 
-The "Aaj Tak" Vocabulary Core
-- Use words indicating systemic panic (e.g., 'हड़कंप', 'खलबली', 'दहशत').
-- Describe police or administrative operations with military-style gravity (e.g., 'क्रैकडाउन', 'ऑपरेशन', 'शिकंजा').
-- Keep essential tech terms in English but written in Devanagari (e.g., 'स्मार्टफोन', 'सोशल मीडिया').
-- Use colloquial Hindi phrases that resonate with street-level conversations.
+Language, Tone & Suspense (MAXIMUM DRAMA)
+- DO NOT write stiff, factual sentences. Use long, flowing narrative sentences.
+- You MUST use high-drama transition phrases at the start of paragraphs such as 'दरअसल...', 'वहीं जब...', 'हैरानी की बात यह है कि...'.
+- Liberally use high-impact Aaj Tak signature words like 'ताबड़तोड़', 'हड़कंप मच गया', 'खलबली', 'मास्टरस्ट्रोक'.
+- Build emotional tension paragraph by paragraph. Do not just report facts. Use emotional hooks like 'सभी इस बारे में चर्चा करने लग गए' or 'हर कोई यह जानने को बेताब है'.
+- The tone should not be flat; pull the reader forward emotionally.
 
-Structural Flow and Paragraphing
-- Absolutely no bullet points or numbered lists in the final article body.
-- Write the entire article in flowing, continuous narrative prose.
-- The opening paragraph must directly address the climax or biggest shock of the headline.
-- Provide necessary background context naturally in the second paragraph.
-- Conclude the narrative with current ongoing actions (e.g., 'माना जा रहा है कि...', 'पुलिस जांच कर रही है').
+Quotes & Reactions (MANDATORY & SPECIFIC)
+- CRITICAL: You MUST include at least one DIRECT QUOTE wrapped in proper Hindi quotation marks ("...") near the end of the article.
+- STRICTLY PROHIBITED: NEVER use generic, vague attributions like 'आला अधिकारियों का कहना है', 'पुलिस ने बताया', or 'सूत्रों के अनुसार'.
+- ALWAYS attribute the quote to a specific, high-ranking designation appropriate to the context (e.g., 'DM', 'SP', 'DCP', 'कमिश्नर', 'SHO').
+- If a name is provided in the raw facts, use it (e.g., 'SP रमेश सिंह ने कहा...'). If NO name is provided, you must combine the local area with the designation to make it sound authentic (e.g., 'ग्रेटर नोएडा वेस्ट के DCP ने सख्त लहजे में स्पष्ट किया कि...', 'जिले के DM ने चेतावनी देते हुए कहा...').
 
-Punctuation and Visual Formatting
-- Use ### strictly for generating subheadings within the text.
-- Include exactly 2 to 3 subheadings per article to break up the text blocks.
-- Integrate quotes directly into the flowing paragraphs.
-- Use proper Hindi punctuation for quotes.
+Formatting & Structure (STRICT)
+- CRITICAL: You MUST use ### to generate EXACTLY 2 or 3 subheadings within the article. Writing an article with only 0 or 1 subheading is STRICTLY PROHIBITED.
+- Distribute the subheadings evenly to break up the paragraphs.
+- Subheadings must be written as a clean, direct question or statement without leading hyphens or special formatting characters.
+- DO NOT use any markdown for links or bold text. Keep the text pure.
 
 ---
 Category-Specific Rules applied for [${category}]:
@@ -126,7 +117,7 @@ ${inputText}
       const chatCompletion = await groq.chat.completions.create({
         messages: [{ role: "system", content: systemPrompt }],
         model: "llama-3.3-70b-versatile", 
-        temperature: 0.7,
+        temperature: 0.8,
       });
 
       setGeneratedArticle(chatCompletion.choices[0]?.message?.content || "No content generated.");
@@ -138,86 +129,89 @@ ${inputText}
     setLoading(false);
   };
 
-  // Custom Formatter function
+  // Custom Formatter function (Cleaned of all hyperlink logic)
   const renderArticle = (text) => {
     let lines = text.split('\n');
     let isFirstLine = true;
 
     return lines.map((line, index) => {
       let cleanLine = line.trim();
-      if (!cleanLine) return <div key={index} style={{ height: '12px' }}></div>;
+      if (!cleanLine) return <div key={index} style={{ height: '16px' }}></div>;
 
       const hasHeadingMarker = cleanLine.startsWith('###');
-      cleanLine = cleanLine.replace(/###|---|\*\*/g, '').trim();
+      // Added safety cleanup for [[ ]] just in case the AI still hallucinates them
+      cleanLine = cleanLine.replace(/###|---|\*\*|\[\[|\]\]/g, '').trim();
 
+      // 1. Main Headline Styling 
       if (isFirstLine && !cleanLine.startsWith('-')) {
         isFirstLine = false;
         return (
-          <h1 key={index} style={{ fontSize: '32px', fontWeight: '800', color: '#000000', lineHeight: '1.3', marginBottom: '24px' }}>
+          <h1 key={index} style={{ fontSize: '30px', fontWeight: '800', color: '#000000', lineHeight: '1.4', marginBottom: '28px', fontFamily: 'inherit', letterSpacing: '-0.3px' }}>
             {cleanLine}
           </h1>
         );
       }
 
+      // 2. Subheading Styling 
       if (hasHeadingMarker || (cleanLine.startsWith('-') && cleanLine.includes(':') && cleanLine.length < 60)) {
         if (cleanLine.startsWith('-')) cleanLine = cleanLine.substring(1).trim();
         return (
-          <h2 key={index} style={{ fontSize: '22px', fontWeight: '700', color: '#222222', marginTop: '28px', marginBottom: '12px' }}>
+          <h2 key={index} style={{ fontSize: '22px', fontWeight: '700', color: '#000000', marginTop: '32px', marginBottom: '16px', lineHeight: '1.3', fontFamily: 'inherit' }}>
             {cleanLine}
           </h2>
         );
       }
 
+      // 3. Body Paragraph Styling 
       const isBullet = line.trim().startsWith('-');
       if (isBullet && cleanLine.startsWith('-')) cleanLine = cleanLine.substring(1).trim();
 
       return (
-        <p key={index} style={{ fontSize: '18px', lineHeight: '1.8', color: '#333333', marginBottom: '18px', paddingLeft: isBullet ? '20px' : '0', textIndent: isBullet ? '-15px' : '0' }}>
-          {isBullet ? `• ${cleanLine}` : cleanLine}
+        <p key={index} style={{ fontSize: '17px', lineHeight: '1.85', color: '#222222', marginBottom: '20px', textAlign: 'left', fontWeight: '400', fontFamily: 'inherit' }}>
+          {isBullet ? <>&bull; {cleanLine}</> : cleanLine}
         </p>
       );
     });
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f4f7f6', padding: '40px 20px', fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.12)', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', padding: '40px 20px', fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+      <div style={{ maxWidth: '820px', margin: '0 auto', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
         
-        <div style={{ backgroundColor: '#d32f2f', padding: '24px', borderBottom: '4px solid #ffcc00', textAlign: 'center' }}>
-          <h1 style={{ margin: 0, color: '#ffffff', fontSize: '32px', fontWeight: '800', textTransform: 'uppercase' }}>
+        <div style={{ backgroundColor: '#d32f2f', padding: '20px', borderBottom: '4px solid #ffcc00', textAlign: 'center' }}>
+          <h1 style={{ margin: 0, color: '#ffffff', fontSize: '28px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             🔴 Text-to-Tak AI
           </h1>
         </div>
         
         <div style={{ padding: '32px' }}>
-          <label style={{ display: 'block', fontWeight: '600', fontSize: '16px', marginBottom: '10px', color: '#444' }}>
+          <label style={{ display: 'block', fontWeight: '600', fontSize: '15px', marginBottom: '10px', color: '#333' }}>
             Drop Raw News Facts Here:
           </label>
           <textarea 
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type or paste bullet points here..."
-            style={{ width: '100%', boxSizing: 'border-box', height: '140px', padding: '16px', fontSize: '15px', borderRadius: '8px', border: '2px solid #e0e0e0', outline: 'none', resize: 'vertical', marginBottom: '20px', backgroundColor: '#fafafa' }}
+            style={{ width: '100%', boxSizing: 'border-box', height: '130px', padding: '16px', fontSize: '15px', borderRadius: '6px', border: '2px solid #e9ecef', outline: 'none', resize: 'vertical', marginBottom: '20px', backgroundColor: '#fafafa' }}
           />
           
           <button 
             onClick={generateNews} 
             disabled={loading}
-            style={{ backgroundColor: loading ? '#e0e0e0' : '#ffcc00', color: loading ? '#888' : '#111', padding: '16px 24px', fontSize: '18px', fontWeight: '700', border: 'none', borderRadius: '8px', cursor: loading ? 'not-allowed' : 'pointer', width: '100%', textTransform: 'uppercase' }}
+            style={{ backgroundColor: loading ? '#e9ecef' : '#ffcc00', color: loading ? '#6c757d' : '#111', padding: '15px 24px', fontSize: '17px', fontWeight: '700', border: 'none', borderRadius: '6px', cursor: loading ? 'not-allowed' : 'pointer', width: '100%', textTransform: 'uppercase', transition: 'all 0.2s' }}
           >
             {loading ? 'Processing Article...' : '⚡ Generate Aaj Tak Style Article'}
           </button>
 
-          {/* New UI Element to show the detected category */}
           {detectedCategory && (
-            <div style={{ marginTop: '15px', textAlign: 'center', fontWeight: 'bold', color: '#d32f2f' }}>
+            <div style={{ marginTop: '15px', textAlign: 'center', fontWeight: 'bold', color: '#d32f2f', fontSize: '14px' }}>
               {detectedCategory}
             </div>
           )}
         </div>
 
         {generatedArticle && (
-          <div style={{ backgroundColor: '#ffffff', padding: '32px', borderTop: '1px solid #eee' }}>
+          <div style={{ backgroundColor: '#ffffff', padding: '32px', borderTop: '1px solid #f1f3f5' }}>
             {renderArticle(generatedArticle)}
           </div>
         )}
