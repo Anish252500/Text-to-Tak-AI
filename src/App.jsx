@@ -64,7 +64,7 @@ function App() {
 
       const classCompletion = await groq.chat.completions.create({
         messages: [{ role: "user", content: classPrompt }],
-        model: "llama-3.1-8b-instant",
+        model: "openai/gpt-oss-20b",
         temperature: 0.1,
       });
 
@@ -116,7 +116,7 @@ ${inputText}
 
       const chatCompletion = await groq.chat.completions.create({
         messages: [{ role: "system", content: systemPrompt }],
-        model: "llama-3.3-70b-versatile", 
+        model: "openai/gpt-oss-120b",
         temperature: 0.8,
       });
 
